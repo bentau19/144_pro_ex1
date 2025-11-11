@@ -1,0 +1,44 @@
+
+import socket
+from datetime import datetime, timedelta
+import sys
+domain_dict = {}
+time_dict = {}
+
+
+def Ask_Main_Server(data,parentIP, parentPort):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.sendto(data, (parentIP, parentPort))
+    data, addr = s.recvfrom(1024)
+    s.close()
+    return data
+
+
+def Init_Current_Server(myPort, parentIP, parentPort ,x):
+    My_socket= socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    My_socket.bind(('', myPort))
+    send_data=""
+    while True:
+        data, addr = My_socket.recvfrom(1024)
+        time_domain = time_dict.get(data)
+        now = datetime.now()
+        if time_domain: # if domain exist at cache
+            if time_domain >= now-timedelta(seconds=x): #if it is updated
+                send_data = domain_dict[data]
+
+        else:
+            send_data = Ask_Main_Server(data,parentIP, parentPort)
+            domain_dict[data] = send_data
+            time_dict[data] = now
+        My_socket.sendto(send_data, addr)
+
+
+
+
+
+if __name__ == "__main__":
+    myPort = int(sys.argv[1])
+    parentIP = sys.argv[2]
+    parentPort = int(sys.argv[3])
+    x = int(sys.argv[4])
+    Init_Current_Server(myPort, parentIP, parentPort, x)
