@@ -1,9 +1,6 @@
 import socket
-import sys
-ip=sys.argv[1]
-port=int(sys.argv[2])
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.sendto(b'schools.com', (ip, port))
+s.sendto(b'Ben Tau and Yael Doron', ('192.168.253.123', 12345))
 data, addr = s.recvfrom(1024)
-print(str(data))
+print(str(data), addr)
 s.close()
