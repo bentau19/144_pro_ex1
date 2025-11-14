@@ -17,18 +17,21 @@ def Ask_Main_Server(data,parentIP, parentPort):
 def Init_Current_Server(myPort, parentIP, parentPort ,x):
     My_socket= socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     My_socket.bind(('', myPort))
-    send_data=""
     while True:
         print("lisening")
         data, addr = My_socket.recvfrom(1024)
         time_domain = time_dict.get(data)
         print("get data")
         now = datetime.now()
-        if time_domain: # if domain exist at cache
-            if time_domain >= now-timedelta(seconds=x): #if it is updated
-                send_data = domain_dict[data]
-
+        if time_domain and time_domain >= now-timedelta(seconds=x): # if domain exist at cache
+            # if time_domain >= now-timedelta(seconds=x): #if it is updated
+            print("get data from cache")
+            send_data = domain_dict[data]
         else:
+            if time_domain:
+                print("cache time out reload data")
+            else:
+                print("Not appear at cache")
             send_data = Ask_Main_Server(data,parentIP, parentPort)
             domain_dict[data] = send_data
             time_dict[data] = now
