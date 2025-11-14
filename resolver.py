@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import sys
 domain_dict = {}
 time_dict = {}
-
+ns_array = [] #all ns and the time of update
 
 def Ask_Main_Server(data,parentIP, parentPort):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -12,6 +12,12 @@ def Ask_Main_Server(data,parentIP, parentPort):
     data, addr = s.recvfrom(1024)
     s.close()
     return data
+
+def split_zone_line(line):
+    parts=line.strip().split(',')
+    domain, ip, type = parts
+    domain_parts={'domain': domain, 'ip':ip, 'type':type}
+    return domain_parts
 
 
 def Init_Current_Server(myPort, parentIP, parentPort ,x):
@@ -23,8 +29,11 @@ def Init_Current_Server(myPort, parentIP, parentPort ,x):
         time_domain = time_dict.get(data)
         print("get data")
         now = datetime.now()
+        if not time_domain:
+            for value in domain_dict.values():
+                pass
+
         if time_domain and time_domain >= now-timedelta(seconds=x): # if domain exist at cache
-            # if time_domain >= now-timedelta(seconds=x): #if it is updated
             print("get data from cache")
             send_data = domain_dict[data]
         else:
@@ -35,6 +44,16 @@ def Init_Current_Server(myPort, parentIP, parentPort ,x):
             send_data = Ask_Main_Server(data,parentIP, parentPort)
             domain_dict[data] = send_data
             time_dict[data] = now
+
+        split_data = split_zone_line(send_data.decode())
+
+        while split_data['type']=='NS':
+            newip ,newport = split_data['ip'].split(':')
+            send_data = Ask_Main_Server(data,newip , newport)
+            domain_dict[data] = send_data
+            time_dict[data] = now
+            split_data = split_zone_line(send_data.decode())
+
         My_socket.sendto(send_data, addr)
 
 

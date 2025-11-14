@@ -20,8 +20,10 @@ def find_domain_ip(domain_name,zone_file):
     with open(zone_file, 'r') as file:
         for line in file:
             splited_line=split_zone_line(line)
-            if(splited_line['domain']==domain_name):
-                return splited_line['ip']
+            if(splited_line['domain']==domain_name or
+                    (domain_name.contains(splited_line['domain'] )and
+                     splited_line['type']=='NS')):
+                return line
     return 'non-existent domain'
 
 if __name__=="__main__":
