@@ -19,8 +19,10 @@ def Init_Current_Server(myPort, parentIP, parentPort ,x):
     My_socket.bind(('', myPort))
     send_data=""
     while True:
+        print("lisening")
         data, addr = My_socket.recvfrom(1024)
         time_domain = time_dict.get(data)
+        print("get data")
         now = datetime.now()
         if time_domain: # if domain exist at cache
             if time_domain >= now-timedelta(seconds=x): #if it is updated
