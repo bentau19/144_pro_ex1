@@ -21,7 +21,7 @@ def find_domain_ip(domain_name,zone_file):
         for line in file:
             splited_line=split_zone_line(line)
             if(splited_line['domain']==domain_name or
-                    (domain_name.contains(splited_line['domain'] )and
+                    (domain_name.endswith(splited_line['domain'])and
                      splited_line['type']=='NS')):
                 return line
     return 'non-existent domain'
