@@ -8,5 +8,8 @@ while True:
     data = input()
     s.sendto(data.encode(), (ip, port))
     data, addr = s.recvfrom(1024)
-    print(str(data.decode()))
+    data = data.decode().strip()
+    if data != 'non-existent domain':
+        data = data.split(',')[1]
+    print(data)
 s.close()

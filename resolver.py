@@ -67,14 +67,18 @@ def init_current_server(my_port, parent_ip, parent_port, x):
                 is_updated = True
 
         # update ns dict and make the ns chain
-        split_data = split_zone_line(send_data.decode())
-        if is_updated and split_data["type"] == 'NS':
-            ns_dict[split_data["domain"]] = [send_data, now]
-
-        while split_data['type']=='NS':
-            newip ,newport = split_data['ip'].split(':')
-            send_data = ask_main_server(data, newip , newport)
+        print(send_data)
+        if send_data.decode().strip() != 'non-existent domain':
             split_data = split_zone_line(send_data.decode())
+            if is_updated and split_data["type"] == 'NS':
+                ns_dict[split_data["domain"]] = [send_data, now]
+            print()
+            while split_data['type']=='NS':
+                newip ,newport = split_data['ip'].split(':')
+                send_data = ask_main_server(data, newip , int(newport))
+                if send_data.decode().strip() == 'non-existent domain':
+                    break
+                split_data = split_zone_line(send_data.decode())
 
         my_socket.sendto(send_data, addr)
 

@@ -1,0 +1,4 @@
+Linux: 172.19.199.228
+pc: 172.19.192.1
+port:resolver:12345,zona:12346,zona2:12347
+mail.google.co.il
