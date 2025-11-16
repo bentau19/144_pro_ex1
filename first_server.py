@@ -1,3 +1,4 @@
+#first part- the server send the received data back to the client in uppercase
 import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind(('', 12345))
