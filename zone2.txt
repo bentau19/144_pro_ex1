@@ -1,3 +1,0 @@
-.co.il,172.19.192.1:12348,NS
-www.google.co.il,1.2.3.8,A
-mail.google.co.il,1.2.3.9,A
