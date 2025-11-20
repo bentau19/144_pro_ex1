@@ -53,14 +53,8 @@ def init_current_server(my_port, parent_ip, parent_port, x):
             # print("get data from cache")
             send_data = domain_dict[data]
         else:
-            #if it at the cache but timeout
-            if time_domain:
-                pass
-                # print("cache time out reload data")
-            else:
-                #if it not at cache so check if it at the ns cache
-                # print("check if it at ns cache")
-                send_data = check_if_in_ns(data,x)
+            #if it at the cache but timeout or not at cache
+            send_data = check_if_in_ns(data,x)
             #if it no where ask the main server
             if send_data is None:
                 # print("Not appear at cache")
